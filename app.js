@@ -16,14 +16,13 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('public'));
 
-// Connect mongoose to the mongoDB Atlas server
-mongoose.connect('mongodb+srv://admin:admin-123@myfirstcluster.nblnt.mongodb.net/todolistDB', options, (err) => {
-    if (err) {
-        console.error(err);
-    } else {
-        console.log('Connection established successfully');
-    }
-});
+try {
+    // Connect mongoose to the mongoDB Atlas server
+    mongoose.connect('mongodb+srv://admin:admin-123@myfirstcluster.nblnt.mongodb.net/todolistDB', options);
+} catch
+    (err) {
+    console.log(err);
+}
 
 // Create Post Schema (record structure)
 const postsSchema = new mongoose.Schema({
@@ -71,14 +70,10 @@ const List = mongoose.model('List', listSchema);
 app.get('/', function (req, res) {
     // docs: document objects
     Post.find({}, ((err, foundItems) => {
-        if (err) {
-            console.error(err);
-        } else {
+        if (!err) {
             if (foundItems.length === 0) {
                 Post.insertMany(posts, {}, (err) => {
-                    if (err) {
-                        console.error(err);
-                    } else {
+                    if (!err) {
                         console.log('Posts inserted successfully');
                     }
                 });
@@ -114,8 +109,6 @@ app.post('/', function (req, res) {
                 foundItem.items.push(formPost);
                 foundItem.save();
                 res.redirect('/' + listName);
-            } else {
-                console.log(err);
             }
         }));
     }
@@ -138,8 +131,6 @@ app.post('/delete', (req, res) => {
         List.findOneAndUpdate({name: listName}, {$pull: {items: {_id: checkedItemId}}}, {}, (err, foundList) => {
             if (!err) {
                 res.redirect('/' + listName);
-            } else {
-                console.error(err);
             }
         });
     }
@@ -163,8 +154,6 @@ app.get(`/:customListName`, function (req, res) {
                 // show existing list
                 res.render('list', {listTitle: foundItem.name, newListItems: foundItem.items});
             }
-        } else {
-            console.log(err);
         }
     }));
 });
