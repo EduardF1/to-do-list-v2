@@ -6,6 +6,7 @@ const _ = require('lodash');
 
 // Setup app
 const app = express();
+const port = 4200;
 const options = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -172,12 +173,6 @@ app.get('/about', function (req, res) {
     res.render('about');
 });
 
-// Heroku app port
-let port = process.env.PORT;
-if(port === null || port === ''){
-    port = 4200;
-}
-
-app.listen(port, () => {
+app.listen(process.env.PORT || port, () => {
     console.log(`Server started on port ${port}`);
 });
