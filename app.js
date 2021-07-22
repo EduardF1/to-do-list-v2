@@ -6,7 +6,6 @@ const _ = require('lodash');
 
 // Setup app
 const app = express();
-const port = 4200;
 const options = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -67,7 +66,7 @@ const listSchema = new mongoose.Schema({
 const List = mongoose.model('List', listSchema);
 
 // Handle homepage
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
     // docs: document objects
     Post.find({}, ((err, foundItems) => {
         if (!err) {
@@ -86,12 +85,12 @@ app.get('/', function (req, res) {
     }));
 });
 
-// Helper functions
+// Helper function
 function getId() {
     return ++posts.length;
 }
 
-app.post('/', function (req, res) {
+app.post('/', (req, res) => {
     const itemName = req.body.newItem;
     const listName = req.body.list;
     const formPost = new Post({
@@ -137,7 +136,7 @@ app.post('/delete', (req, res) => {
 });
 
 // handle custom routes
-app.get(`/:customListName`, function (req, res) {
+app.get(`/:customListName`, (req, res) => {
     const customListName = _.capitalize(req.params.customListName);
 
     List.findOne({name: customListName}, {}, {}, ((err, foundItem) => {
@@ -158,10 +157,15 @@ app.get(`/:customListName`, function (req, res) {
     }));
 });
 
-app.get('/about', function (req, res) {
+app.get('/about', (req, res) => {
     res.render('about');
 });
 
-app.listen(process.env.PORT || port, () => {
-    console.log(`Server started on port ${port}`);
+let port = process.env.PORT;
+if (port === null || port === "") {
+    port = 4200;
+}
+
+app.listen(port, function () {
+    console.log("Server has started successfully!");
 });
