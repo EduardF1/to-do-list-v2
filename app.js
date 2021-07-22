@@ -6,7 +6,6 @@ const _ = require('lodash');
 
 // Setup app
 const app = express();
-const port = 4200;
 const options = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -16,7 +15,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('public'));
 
-// Connect mongoose to the local mongoDB server
+// Connect mongoose to the mongoDB Atlas server
 mongoose.connect('mongodb+srv://admin:admin-123@myfirstcluster.nblnt.mongodb.net/todolistDB', options, (err) => {
     if (err) {
         console.error(err);
@@ -173,6 +172,11 @@ app.get('/about', function (req, res) {
     res.render('about');
 });
 
+// Heroku app port
+let port = process.env.PORT;
+if(port === null || port === ''){
+    port = 4200;
+}
 
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
